@@ -25,4 +25,5 @@ add_executable(MIXDYN
                outdyn.f90
                invar.f90
                yieldf.f90
+               flowpl.f90
                )
