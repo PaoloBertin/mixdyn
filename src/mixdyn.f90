@@ -33,7 +33,7 @@ program mixdyn
 
     call inputd(coord, ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum, ngaus, nlaps, nmats, nnode, npoin, nprev,    &
         nstre, ntype, posgp, props, weigp)
-
+    goto 100
     call intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime, dtend, gaama, ifixd, ifunc, intgr, kstep, miter,    &
         ndofn, nelem, ngrqs, noutd, noutp, npoin, nprqd, nreqd, nreqs, nstep, omega, dispi, toler, veloi, ipred)
 
@@ -70,6 +70,7 @@ program mixdyn
     end do
 
 !   close file I/O
+100 continue
     close(5)
     close(6)
 

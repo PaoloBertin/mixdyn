@@ -1,4 +1,4 @@
-subroutine inputd(ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum, ngaus, nlaps, nmats, nnode, npoin, nprev, &
+subroutine inputd(coord, ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum, ngaus, nlaps, nmats, nnode, npoin, nprev,  &
     nstre, ntype, posgp, props, weigp)
 ! **********************************************************************
 !
@@ -20,12 +20,12 @@ subroutine inputd(ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum,
     read(5,  913) title
     write(6, 914) title
 
-! READ THE FIRST DATA CARD, AND ECHO 1T IMMEDIATELY
+    ! Read the first data card, and echo it immediately
     read(5, 900) nvfix, ntype, nnode, nprop, ngaus, ndime, nstre, ncrit, nprev, nconm, nlaps, ngaum, nrads
     write(6, 901) npoin, nelem, nvfix, ntype, nnode, ndofn, nmats, nprop, ngaus, ndime, nstre, ncrit, nprev, nconm, nlaps, ngaum,  &
         nrads
 
-! READ THE ELEMENT NODAL CONNECTIONS, AND THE PROPERTY NUMBERS.
+    ! Read the element nodal connections, and the property numbers.
     read(5, 911)
     write(6, 902)
     do ielem = 1,nelem
@@ -33,32 +33,32 @@ subroutine inputd(ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum,
         write(6, 903) numel, matno(numel), (lnods(numel, inode), inode=1, nnode)
     end do
 
-! ZERO ALL THE NODAL COORD1NATES, PRIOR TO READING SOME OF THEM
-    do IPOIN=1, MPOIN
-        do IDIME=1, MDIME
+    ! Zero all the nodal coordinates, prior to reading some of them
+    do ipoin=1, mpoin
+        do idime=1, mdime
             coord(ipoin, idime) = 0.0
         end do
     end do
 
-! READ SOME COORDINATES, FINISHING WITH THE LAST NODE OF ALL
+    ! Read some coordinates, finishing with the last node of all
     read(5, 911)
     do while(ipoin .ne. npoin)
         read(5, 905) ipoin, (coord(ipoin, idime), idime=1, ndime)
         write(6, 905)ipoin, (coord(ipoin, idime), idime=1, ndime)
     end do
 
-! INTERPOLATE COORDINATES OF MID-SIDE NODES
+    ! Interpolate coordinates of mid-side nodes
     call nodxyr(coord, lnods, nelem, nnode, npoin, nrads, ntype)
 
-! PRINT NODE COORDINATES
+    ! Print node coordinates
     write(6, 904)
     do ipoin =1, npoin
         write(6, 905) ipoin, (coord(ipoin, idime), idime=1, ndime)
     end do
 
-! READ THE FIXED VALUES
+    ! Read the fixed values
     write(6, 907)
-    do IPOIN = 1, npoin
+    do ipoin = 1, npoin
         do IDOFN=1, ndofn
             ifpre(idofn, ipoin)=0
         end do
@@ -70,7 +70,7 @@ subroutine inputd(ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum,
         write(6, 909) ipoin, (ifpre(idofn, ipoin), idofn=1, ndofn)
     end do
 
-! READ THE AVAILABLE SELECTION OF ELEMENT PROPERTIES.
+    ! Read the  available selection of the element properties.
     write(6, 910)
     read (5, 911)
     do imats=1, nmats
@@ -78,7 +78,7 @@ subroutine inputd(ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum,
         write(6, 912) imate, (props(imate, iprop), iprop=1, npoin)
     end do
 
-! SET UP GAUSSIAN 1NTEGRATION CONSTANTS
+    ! Set up gaussian integration constants
     call gaussq(ngaus, posgp, weigp)
 
     return
