@@ -30,4 +30,5 @@ add_executable(MIXDYN
                geomst.f90
                lingnl.f90
                multpy.f90
+               decomp.f90
                )
