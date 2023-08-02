@@ -44,7 +44,7 @@ subroutine multpy(final ,amatx ,start ,maxai ,neqns ,nwmtl)
             jeqns=jeqns-1
             sumaa=sumaa+amatx(icolm)*start(jeqns)
         end do
-        final (ieqns)=final(ieqns)+sumaa
+        final(ieqns)=final(ieqns)+sumaa
     end do
 
     return
