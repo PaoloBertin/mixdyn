@@ -42,9 +42,9 @@ subroutine multpy(final ,amatx ,start ,maxai ,neqns ,nwmtl)
         sumaa=0.0
         do icolm=lower , kuper
             jeqns=jeqns-1
-            sumaa=sumaa+amatx(icolm)*start( jeqns)
+            sumaa=sumaa+amatx(icolm)*start(jeqns)
         end do
-        final ( ieqns) =final(ieqns)+sumaa
+        final (ieqns)=final(ieqns)+sumaa
     end do
 
     return
