@@ -52,9 +52,9 @@ subroutine impexp (aalfa, acceh, accei, accej, accek, accel, accev, afact, azero
     end do
 
     ! Calculates vectors for horizontal and vertical excitation
-    call multiply(accek, xmass, accel, maxai, nsize, nwmtl)
-    call multiply(accej, xmass, accei, maxai, nsize, nwmtl)
-    call multiply(displ, stiff, dispi, maxaj, nsize, nwktl)
+    call multpy(accek, xmass, accel, maxai, nsize, nwmtl)
+    call multpy(accej, xmass, accei, maxai, nsize, nwmtl)
+    call multpy(displ, stiff, dispi, maxaj, nsize, nwktl)
 
     ! Calculates damping matrix (aalfa*m + beeta*k)
     do isize=1, nsize
