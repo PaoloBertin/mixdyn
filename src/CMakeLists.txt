@@ -31,4 +31,5 @@ add_executable(MIXDYN
                lingnl.f90
                multpy.f90
                decomp.f90
+               redbak.f90
                )
