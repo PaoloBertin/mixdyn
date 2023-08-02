@@ -28,4 +28,5 @@ add_executable(MIXDYN
                flowpl.f90
                dintob.f90
                geomst.f90
+               lingnl.f90
                )
