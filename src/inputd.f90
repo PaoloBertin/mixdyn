@@ -75,7 +75,7 @@ subroutine inputd(coord, ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem,
     read (5, 911)
     do imats=1, nmats
         read(5, 917)  imate, (props(imate, iprop), iprop=1, nprop)
-        write(6, 912) imate, (props(imate, iprop), iprop=1, npoin)
+        write(6, 912) imate, (props(imate, iprop), iprop=1, nprop)
     end do
 
     ! Set up gaussian integration constants

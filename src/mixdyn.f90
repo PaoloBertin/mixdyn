@@ -3,6 +3,17 @@ program mixdyn
 !
 ! TIME INTEGRATION IMPLICIT-EXPLICITY ALGORITHM
 !
+! Variables
+!
+!   NPOIN   Number of nodes
+!   NELEM   Number of elements
+!   NDOFN
+!   NVFIX   Number of bound nodes
+!   NCONM
+!   NRADS
+!
+!   COORD   Nodal coordinates
+!   PROPS
 ! **********************************************************************
     implicit none
 
@@ -33,7 +44,7 @@ program mixdyn
 
     call inputd(coord, ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum, ngaus, nlaps, nmats, nnode, npoin, nprev,    &
         nstre, ntype, posgp, props, weigp)
-    goto 100
+
     call intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime, dtend, gaama, ifixd, ifunc, intgr, kstep, miter,    &
         ndofn, nelem, ngrqs, noutd, noutp, npoin, nprqd, nreqd, nreqs, nstep, omega, dispi, toler, veloi, ipred)
 
