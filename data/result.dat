@@ -1,0 +1,37 @@
+ SPHERICAL CAP EXAMPLE - MIXDYN - EXAMPLE 1 - FIG. 11.4                         
+
+CONTROL PARAMETERS 
+NPOIN =    0     NELEM =    2     NVF1X =    6
+NTYPE =    3     NNODE =    8     NDOFN =    0
+NMATS =    0     NPROP =   11     NGAUS =    2
+NDIME =    2     NSTRE =    4     NCR1T =    2
+NPREV =    0     NCONM =    0     NLAPS =    2
+NGAUM =    3     NRADS =    1
+
+
+   ELEMENT  PROPERTY               NODE NUMBERS
+         1         1         1    4    6    7    8    5    3    2
+         2         1         6    9   11   12   13   10    8    7
+    4   0.00116   0.01921
+    5   0.00121   0.02426
+    6   0.00126   0.02931
+    7   0.00131   0.03436
+    8   0.00136   0.03941
+    9   0.00141   0.04446
+   10   0.00146   0.04951
+    0   0.00000   0.00000
+
+
+ NODE         X         Y
+
+
+ NODE CODE
+    7
+   12
+   17
+   22
+   27
+   32
+
+
+MATERIAL PROPERTIES

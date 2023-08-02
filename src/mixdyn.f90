@@ -26,8 +26,8 @@ program mixdyn
     common stiff, xmass, dampg, stifi, stifs, dampi
 
 !  Open the file I/O
-    open(5, file='input.dat',  status='OLD')
-    open(6, file='result.dat', status='OLD')
+    open(5, file='/home/paolo-bertin/Documenti/FortranProjets/mixdyn/data/input.dat',  status='OLD')
+    open(6, file='/home/paolo-bertin/Documenti/FortranProjets/mixdyn/data/result.dat', status='OLD')
 
     call contol(ndofn, nelem, nmats, npoin)
 
