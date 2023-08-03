@@ -86,4 +86,5 @@ program mixdyn
     close(6)
 
     stop
-end
+
+end program
