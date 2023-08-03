@@ -132,3 +132,21 @@ FRICT ANGLE   =  0.000E+00
 FLUIDITY PAR  =  0.100E+01
 EXP delta     =  0.100E+01
 FLOW CODE     =  0.000E+00
+
+
+T1ME STEPP1NG PARAMETERS
+nstep=  200     noutd=    1     noutp=   20
+nreqd=    1     nreqs=    1     nacce=    1
+ifunc=    1     ifixd=    0     miter=    5
+kstep=  201     ipred=    2
+
+
+dtime =  0.0000500      dtend =  0.0010000
+dtrec =  0.0000000      aalfa =  0.0000000
+beeta =  0.0000000      delta =  0.2500000
+gaama =  0.5000000      azero =  0.0000000
+bzero =  0.0000000      omega =  0.0000000
+toler =  0.0001000
+
+
+SELECTIVE OUTPUT REQUESTED FOR FOLLOWING

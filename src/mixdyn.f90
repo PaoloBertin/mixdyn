@@ -7,10 +7,10 @@ program mixdyn
 !
 !   NPOIN   Number of nodes
 !   NELEM   Number of elements
-!   NDOFN
+!   NDOFN   Number of degrees of freedom per node
 !   NVFIX   Number of bound nodes
-!   NCONM
-!   NRADS
+!   NCONM   Number of concentrated masses
+!   NRADS   
 !
 !   COORD   Nodal coordinates
 !   PROPS
@@ -36,7 +36,7 @@ program mixdyn
 
     common stiff, xmass, dampg, stifi, stifs, dampi
 
-!  Open the file I/O
+    ! Open the file I/O
     open(5, file='/home/paolo-bertin/Documenti/FortranProjets/mixdyn/data/input.dat',  status='OLD')
     open(6, file='/home/paolo-bertin/Documenti/FortranProjets/mixdyn/data/result.dat', status='OLD')
 
