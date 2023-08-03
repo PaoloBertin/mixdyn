@@ -13,7 +13,7 @@ subroutine intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime,
     integer :: intgr(melem), nprqd(mnode), ngrqs(mnode)
 
     real :: aalfa, afact, azero, beeta, bzero, delta, dtime, dtend, gaama, omega, toler
-    real :: tdisp(1), dtrec, xgash, ygash, dispi(mpoin*mdime), veloi(mpoin*mdime), acceh(mpoin*mdime), accev(mpoin*mdime)
+    real :: tdisp(1), veloc(1), dtrec, xgash, ygash, dispi(mpoin*mdime), veloi(mpoin*mdime), acceh(mpoin*mdime), accev(mpoin*mdime)
 
     ! Read time stepping and selective output parameters
     read(5, 900)
