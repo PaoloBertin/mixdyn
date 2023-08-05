@@ -1,16 +1,16 @@
 subroutine lingnl(cartd, djacm, dmatx, eldis, gpcod, kgasp, kgaus, ndofn, nlaps, nnode, nstre, ntype, poiss, shape, stran, stres,  &
     strin)
     !
-    ! ELASTIC STRAIN AND stresSES
+    ! Elastic strain and stresses
     !
     real :: cartd(2,9) ,stran(4), dmatx(4,4) ,strin(4,1), eldis(2,9), stres(4), djacm(2,2), agash(2,2), gpcod(2,9) ,shape(9)
 
-    ! CALCULATE STRAINS FROM DEFORMATION JACOBIAN
+    ! Calculate strains from deformation jacobian
 
     if(nlaps .lt. 2) goto 15
-    stran(1)=0.5*(djacm(1, 1)*djacm(1, 1)+djacm(2, 1) *djacm(2, 1) - 1.0)
-    stran(2)=0.5*(djacm(1,2)*djacm(1,2)+djacm(2,2)*djacm(2,2) -1.0)
-    stran(3)=djacm(1, 1) *djacm( 1,2) + djacm(2,1)*djacm(2, 2)
+    stran(1)=0.5 * (djacm(1, 1) * djacm(1, 1) + djacm(2, 1) * djacm(2, 1) - 1.0)
+    stran(2)=0.5 * (djacm(1,2) * djacm(1,2) + djacm(2,2) * djacm(2,2) -1.0)
+    stran(3) = djacm(1, 1) * djacm( 1,2) + djacm(2,1) * djacm(2, 2)
 
     ! For small displacements
     goto 25
@@ -47,14 +47,14 @@ subroutine lingnl(cartd, djacm, dmatx, eldis, gpcod, kgasp, kgaus, ndofn, nlaps,
     do  istre=1,nstre
         stres(istre)=0.0
         do  jstre=1,nstre
-            stres(istre) =stres(istre)+dmatx(istre, jstre) *stran(jstre)
+            stres(istre) = stres(istre)+dmatx(istre, jstre) *stran(jstre)
         end do
     end do
 
-    if(ntype .eq. 1) stres(4)=0.0
-    if(ntype .eq. 2) stres(4)=poiss*(stres(1)+stres(2))
+    if(ntype .eq. 1) stres(4) = 0.0
+    if(ntype .eq. 2) stres(4) = poiss * (stres(1)+stres(2))
 
     return
 
-end subroutine
+end subroutine lingnl
 

@@ -1,34 +1,25 @@
-subroutine impexp (aalfa, acceh, accei, accej, accek, accel, accev, afact, azero, beeta, bzero, consd, consf, dampi, dampg, delta, &
-    dispi, displ, dispt , dtend ,dtime ,gaama , ifixd, ifpre, ifunc, iiter ,istep ,kstep , maxai, maxaj, ndofn, nsize, npoin,      &
-    nwktl, nwmtl ,omega , rload ,stiff ,stifi ,stifs, veloi, velol , velot ,xmass ,ymass , ipred)
+subroutine impexp (consd, consf, iiter ,istep)
 !
-! GENERATES PARTIAL EFFECTIVE LOAD VECTOR
+! Generates partial effective load vector
 !
+    use model
+
     implicit none
 
-    include 'param.inc'
+    integer :: istep, kount, ishot, ipoin, idofn, isize, iiter, nsize, imaxa, kmaxa, jmaxa, lmaxa, iwktl, iwmtl
 
-    integer :: istep, nwmtl, ipred, kount, nwktl, kstep, ishot, ipoin, idofn, isize, ifixd, iiter, ifunc, ndofn, nsize, npoin,     &
-        imaxa, kmaxa, jmaxa, lmaxa, iwktl, iwmtl
-    integer :: maxaj(1), ifpre(mdofn, mpoin), maxai(1)
-
-    real :: aalfa, consa, omega, afact, azero, beeta, bzero, consd, consf, delta, consb, consc, consg, consh, conse, dtend, dtime, &
-        gaama, facts, facth, factv
-
-    real :: acceh(mpoin*mdime), accei(mpoin*mdime), accej(mpoin*mdime), accek(mpoin*mdime), accel(mpoin*mdime), accev(mpoin*mdime),&
-        rload(1), stiff(1) ,dispi(1), stifs(1) ,veloi(1) ,velol(1) ,velot(1) , xmass(1) ,ymass(1), stifi(1), dampi(1), dampg( 1),  &
-        displ(1), dispt( 1)
-
+    real :: consa, consd, consf, consb, consc, consg, consh, conse, facts, facth, factv
+    real :: functa, functs
 
     if(istep .gt. 1 .or. iiter .gt. 1) goto 1000
 
-    consa = dtime*dtime*(0.5-delta)
-    consb = dtime*(1.0 -gaama)
-    consc = dtime*dtime*delta
-    consd = dtime*gaama
+    consa = dtime * dtime * (0.5 - delta)
+    consb = dtime * (1.0 - gaama)
+    consc = dtime * dtime * delta
+    consd = dtime * gaama
     consf = 1./consc
-    consg = beeta*gaama*dtime
-    consh = aalfa*gaama*dtime
+    consg = beeta * gaama * dtime
+    consh = aalfa * gaama * dtime
     conse = 1.0 + consh
 
     ishot = 0
@@ -46,7 +37,7 @@ subroutine impexp (aalfa, acceh, accei, accej, accek, accel, accev, afact, azero
     end do
 
 
-    DO isize =1, nsize
+    do isize =1, nsize
         imaxa = maxai(isize)
         xmass(imaxa) = xmass(imaxa) + ymass(isize)
     end do
@@ -77,7 +68,8 @@ subroutine impexp (aalfa, acceh, accei, accej, accek, accel, accev, afact, azero
     end do
 
     do isize = 1,nsize
-        accei(isize) = rload(isize) - displ(isize) - velol(isize)
+        ! accei(isize) = rload(isize) - displ(isize) - velol(isize)
+        accei(isize) = force(isize) - displ(isize) - velol(isize)
     end do
 
     call decomp(dampg, maxai, nsize, ishot)
@@ -96,19 +88,19 @@ subroutine impexp (aalfa, acceh, accei, accej, accek, accel, accev, afact, azero
         dispt(isize) = dispi(isize)
         velot(isize) = veloi( isize)
 
-210     dispi(isize)=dispt( isize) +dtime*veloi ( isize) +consa*accei( isize)
-        veloi ( isize) =veloi ( isize)+CONSB*accei( isize)
+210     dispi(isize)=dispt(isize) + dtime*veloi (isize) +consa * accei( isize)
+        veloi ( isize) =veloi (isize)+CONSB*accei(isize)
         if(ipred .eq. 2) cycle
         dispt(isize)=dispi(isize)
 
         velot(isize) = veloi (isize)
-        accei(isize) = consf*(dispt(isize)-dispi(isize) )
+        accei(isize) = consf * (dispt(isize) - dispi(isize) )
     end do
 
     ! Calculates load vectors
-    facts = functs(azero, bzero, dtend, dtime, ifunc, istep, omega)
-    facth = functa(acceh, afact, dtend, dtime, ifunc, istep)
-    factv = functa(accev, afact, dtend, dtime, ifunc, istep)
+    facts = functs(istep)
+    facth = functa(acceh, istep)
+    factv = functa(accev, istep)
     write(6,910) facts, facth, factv
 
 650 continue
@@ -151,52 +143,20 @@ subroutine impexp (aalfa, acceh, accei, accej, accek, accel, accev, afact, azero
     ! calculates partial effective load vector
 660 do isize=1, nsize
         if(ifunc .ne. 0) goto 570
-        if(ifixd .eq. 2) displ(isize)=-velol(isize) - facth*accej(isize)+rload(isize)
-        if(ifixd .eq. 1) displ(isize)=-velol(isize) - factv*accek(isize)+rload(isize)
-        if(ifixd .eq. 0) displ(isize)=-velol(isize) - facth*accej(isize)+rload(isize) - factv*accek( isize)
+        !if(ifixd .eq. 2) displ(isize) = -velol(isize) - facth*accej(isize) + rload(isize)
+        !if(ifixd .eq. 1) displ(isize) = -velol(isize) - factv*accek(isize) + rload(isize)
+        !if(ifixd .eq. 0) displ(isize) = -velol(isize) - facth*accej(isize) + rload(isize) - factv*accek(isize)
+        if(ifixd .eq. 2) displ(isize) = -velol(isize) - facth*accej(isize) + force(isize)
+        if(ifixd .eq. 1) displ(isize) = -velol(isize) - factv*accek(isize) + force(isize)
+        if(ifixd .eq. 0) displ(isize) = -velol(isize) - facth*accej(isize) + force(isize) - factv*accek(isize)
         if(ifunc .eq. 0) cycle
-570     displ(isize) = -velol( isize)+rload( isize)*facts
+!570     displ(isize) = -velol(isize) + rload(isize)*facts
+570     displ(isize) = -velol(isize) + force(isize)*facts
     end do
 
     return
 
 900 format(/' Initial acceleration '/)
 910 format( 1X, 10E12.5)
-
-contains
-
-    real function functs(azero, bzero, dtend, dtime, ifunc, istep, omega)
-        implicit none
-        real, intent(in) :: azero, bzero, dtend, dtime, omega
-        integer, intent(in) :: ifunc, istep
-
-
-    end function
-
-    real function functa(accer, afact, dtend, dtime, ifunc, jstep)
-        !
-        !   Accelerogram interpolation
-        implicit none
-
-        integer, intent(in) :: ifunc, jstep
-        real,    intent(in) :: afact, dtend, dtime, accer(1)
-
-        integer :: mgash, ngash
-        real :: xgash
-
-        if(ifunc .ne. 0) return
-
-        functa = 0.0
-
-        if(jstep .eq. 0 .or. float(jstep)*dtime .gt. dtend) return
-        xgash = (float(jstep) - 1.0)/afact + 1.0
-
-        mgash = xgash
-        ngash = mgash + 1
-
-        xgash=xgash - float(mgash)
-
-        functa = accer(mgash) * (1.0 - xgash) + xgash*accer(ngash)
-    end function
 
 end subroutine

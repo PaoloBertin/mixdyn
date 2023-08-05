@@ -1,16 +1,16 @@
-subroutine gaussq(ngaus, posgp, weigp)
+subroutine gaussq()
 ! **********************************************************************
 !
 !  MIXDYN INPUT ROUTINE
 !
 ! **********************************************************************
+    use model
+
     implicit none
 
-    include 'param.inc'
+    !include 'param.inc'
 
-    integer :: ngaus,kgaus, igash, jgash
-
-    real :: posgp(4), weigp(4)
+    integer :: kgaus, igash, jgash
 
     if(ngaus .le. 2) then
         posgp(1)=-0.577350269189626

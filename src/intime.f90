@@ -1,19 +1,14 @@
-subroutine intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime, dtend, gaama, ifixd, ifunc, intgr, kstep, miter,  &
-    ndofn, nelem, ngrqs, noutd, noutp, npoin, nprqd, nreqd, nreqs, nstep, omega, tdisp, toler, veloc, ipred)
-    ! 
+subroutine intime()
+    !
     ! INITIAL VALUES AND TIME 1NTEGRATION DATA
-    ! 
+    !
+    use model
+
     implicit none
 
-    include 'param.inc'
+    integer :: ireqd=0, ireqs=0, ielem=0, jpoin=0, ipoin=0, ngash=0, nposn=0, iacce=0, idofn=0
 
-    integer :: ifixd, ifunc, kstep, miter, ndofn, nelem, noutd, noutp, npoin, nreqd, nreqs, nstep, ipred, nacce, ireqd, ireqs,     &
-        ielem, jpoin, ipoin, ngash, nposn, iacce, idofn
-
-    integer :: intgr(melem), nprqd(mnode), ngrqs(mnode)
-
-    real :: aalfa, afact, azero, beeta, bzero, delta, dtime, dtend, gaama, omega, toler
-    real :: tdisp(1), veloc(1), dtrec, xgash, ygash, dispi(mpoin*mdime), veloi(mpoin*mdime), acceh(mpoin*mdime), accev(mpoin*mdime)
+    real :: xgash, ygash
 
     ! Read time stepping and selective output parameters
     read(5, 900)
@@ -62,7 +57,8 @@ subroutine intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime,
 
     ! Initial velocities
     write(6, 906)
-    write(5,  900)
+    read(5,  900)
+    ngash = 0
     do while(ngash .ne. npoin)
         read(5,  904) ngash, xgash , ygash
         nposn = (ngash - 1)*ndofn + 1
@@ -105,6 +101,7 @@ subroutine intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime,
     endif
 
 250 continue
+    return
 
 900 format()
 902 format(16I5)
@@ -125,7 +122,7 @@ subroutine intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime,
 910 format('NODES', 10I5)
 911 format('G.P. ', 10I5)
 930 format(//'TYPE OF ELEMENT , IMPLICIT=1 , EXPLICIT=2 ')
-903 format(//' NODE', 7X, 'INITIAL X-DISP', 2X, 'INITIAL Y-DISP')
+903 format(//' NODE', 2X, 'INITIAL X-DISP', 2X, 'INITIAL Y-DISP')
 904 format(I5, F10.5, 5X, F10.4)
 !905   format(I5, F10.4)
 906 format(//' NODE ', 2X, 'INITIAL X-VEL.', 2X, 'INITIAL Y-VEL.')
@@ -133,5 +130,4 @@ subroutine intime(aalfa, acceh, accev, afact, azero, beeta, bzero, delta, dtime,
 912 format('HORIZONTAL ACCELERATION ORDINATES AT', F9.4, 2X, 'SEC'/ )
 913 format('VERTICAL ACCELERATION ORDINATES AT  ', F9.4, 2X, 'SEC'/ )
 
-    RETURN
-END
+end subroutine

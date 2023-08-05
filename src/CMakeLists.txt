@@ -20,6 +20,7 @@ add_executable(MIXDYN
                resepl.f90
                blarge.f90
                impexp.f90
+               functs.f90
                functa.f90
                itrate.f90
                outdyn.f90
@@ -32,4 +33,5 @@ add_executable(MIXDYN
                multpy.f90
                decomp.f90
                redbak.f90
+               model.f90
                )

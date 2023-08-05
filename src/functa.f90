@@ -1,11 +1,13 @@
-real function functa (accer, afact, dtend, dtime, ifunc, jstep)
+real function functa (accer, jstep)
 !
 !   Accelerogram interpolation
 !
+    use model
+    
     implicit none
     
-    integer, intent(in) :: ifunc, jstep
-    real,    intent(in) :: afact, dtend, dtime, accer(1)
+    integer, intent(in) :: jstep
+    real,    intent(in) :: accer(1)
     
     integer :: ngash, mgash
 

@@ -1,31 +1,26 @@
-subroutine linkin(force, ifpre, intgr, leqns, lnods, maxai, maxaj, mhigh, ndofn, nelem, neqns, nnode, npoin, nwktl, nwmtl, xmass,  &
-    ymass)
+subroutine linkin()
 ! **********************************************************************
 !
 ! LINKS WITH PROFILE SOLVER
 !
 ! **********************************************************************
+    use model
+
     implicit none
 
-    include 'param.inc'
+    integer :: imass, nevab, ipoin, idofn, ielem, meqns, ievab, inode, ident, ieqns, mkoun, nposm, nposn
 
-    integer :: ndofn, nelem, neqns, nnode, npoin, nwktl, nwmtl, imass, nevab, ipoin, idofn, ielem, meqns, ievab, inode, ident,     &
-        ieqns, mkoun, nposm, nposn
-
-    integer :: lnods(nelem,1), ifpre(ndofn, 1), maxai(1), maxaj(1), intgr(1)
-
-    !   real ::
-    real :: force(1), emass(171), ymass(1), xmass(1)
-    real :: mhigh(1), leqns(18, 1)
+    real :: emass(171)
 
     imass=1
 
     rewind 3
 
-    nevab=nnode*ndofn
+    nevab = nnode * ndofn
 
     ! number of unknowns
     neqns=0
+
     do ipoin=1,npoin
         do idofn=1,ndofn
             ! IF(ifpre(idofn,ipoin)) 110,120,110
@@ -43,7 +38,7 @@ subroutine linkin(force, ifpre, intgr, leqns, lnods, maxai, maxaj, mhigh, ndofn,
             ! 110       ifpre(idofn, ipoin)=0
         end do
 
-        write(6,7) ipoin, (ifpre( idofn, ipoin), idofn=1,ndofn)
+        write(6,7) ipoin, (ifpre( idofn, ipoin), idofn = 1,ndofn)
     end do
 
     meqns = 1 + neqns
@@ -88,7 +83,7 @@ subroutine linkin(force, ifpre, intgr, leqns, lnods, maxai, maxaj, mhigh, ndofn,
     write(6,920) neqns, nwmtl, nwktl
     write(6,930) (maxai(ieqns), ieqns=1,meqns)
     write(6,930) (maxaj(ieqns), ieqns=1,meqns)
-    if(nwktl .GT. 6000) goto 210
+    if(nwktl .gt. 6000) goto 210
     goto 220
 210 write(6,910)
     stop
@@ -98,7 +93,7 @@ subroutine linkin(force, ifpre, intgr, leqns, lnods, maxai, maxaj, mhigh, ndofn,
     DO ielem=1,nelem
         imass=intgr( ielem)
         if(imass .eq. 2) cycle
-        read(3) emass
+        ! TODO !! modificare read(3) emass
         call addban(xmass,maxai,emass, leqns(1, ielem) , nevab)
     end do
 
@@ -108,11 +103,12 @@ subroutine linkin(force, ifpre, intgr, leqns, lnods, maxai, maxaj, mhigh, ndofn,
         do idofn =1,ndofn
             nposm=nposm+1
             nposn=ifpre(idofn, ipoin)
-            IF(nposn.EQ.0) cycle
-            ymass(nposn)=ymass(nposm)
-            force(nposn)=force(nposm)
+            if(nposn .eq. 0) cycle
+            ymass(nposn) = ymass(nposm)
+            force(nposn) = force(nposm)
         end do
     end do
+
     return
 
 7   format(4I10)
@@ -120,4 +116,4 @@ subroutine linkin(force, ifpre, intgr, leqns, lnods, maxai, maxaj, mhigh, ndofn,
 920 format(/5X, 'neqns=',I5,5X, 'nwmtl=',I5,5X, 'nwktl=', 15/)
 910 format (/'SET DIMENSION EXCEEDED - CHECK LINKIN '/)
 
-END
+end subroutine linkin

@@ -1,32 +1,28 @@
-subroutine resepl (coord , displ, effst, eload, epstn, iiter , intgr, leqns ,lnods, matno, ncrit, ndime, ndofn, nelem, ngaus,      &
-    nlaps ,nmats ,nnode , npoin, nstre, ntype ,posgp ,props, resid, strag, strin, strsg, weigp, ipred, istep)
+subroutine resepl (eload, iiter, istep)
     !
     ! Evaluates residual forces
     !
+    use model
+
     implicit none
 
-    include 'param.inc'
+    integer :: iiter, istep, idofn, nevab, ntotv, nstr1, ielem, ievab, kgaus, lprop, itotv, iposn, inode, lnode, idime, nposn,     &
+        kgasp, igaus, jgaus, istr1, mstep, jstep, istre, mgash, lmveb
 
-    integer :: iiter, npoin, nelem, istep, nlaps, nmats, nnode, nstre, ntype, ipred, ncrit, ndime, ndofn, ngaus, idofn, nevab,     &
-        ntotv, nstr1, ielem, ievab, kgaus, lprop, itotv, iposn, inode, lnode, idime, nposn, kgasp, igaus, jgaus, istr1, mstep,     &
-        jstep, istre, mgash, lmveb
-    integer :: matno(melem), lnods(melem, 1), leqns(mevab, mpoin)
+    real :: frict, twopi, young, poiss, thick, uniax, hards, exisp, etasp, djacb, dvolu, preys, sint3, steff, theta, varj2, yield, &
+        espre, escur, rfact, astep, reduc, abeta, agash, dlamd, bgash, curys, bring, dispv
 
-    real :: frict, twopi, young,poiss, thick, uniax, hards, dispt, exisp, etasp, djacb, dvolu, preys, sint3, steff, theta, varj2,  &
-        yield, espre, escur, rfact, astep, reduc, abeta, agash, dlamd, bgash, curys, bring
-    real :: coord(mpoin, 1), deriv(2, 9), dmatx(4, 4), avect(4), props(mmats, mprop), dlcod(2, 9), eload(melem, 1), cartd(2, 9),   &
-        shape(9), posgp(4),desig(4), dvect(4), intgr(1), stran(4), devia(4), bmatx(4, 18), displ(1), gpcod(2, 9),                  &
-        djacm(2, 2), stres(4), weigp(1), strin(4,1), elcod(2,9), sigma(4), sgtot(4), effst(1) ,epstn(1), strsg(4,1), eldis(2, 9),  &
-        strag(4, 1), resid(1)
+    real :: deriv(2, 9), dmatx(4, 4), avect(4), dlcod(2, 9), eload(nelem, 1), cartd(2, 9), shape(9), desig(4), dvect(4), stran(4), &
+        devia(4), bmatx(4, 18), gpcod(2, 9), djacm(2, 2), stres(4), elcod(2,9), sigma(4), sgtot(4), eldis(2, 9)
 
     twopi = 6.283185307179586
-    nevab = nnode*ndofn
-    ntotv = npoin*ndofn
+    nevab = nnode * ndofn
+    ntotv = npoin * ndofn
     nstr1 = 4
-    do ielem =1, nelem
+    do ielem = 1, nelem
         if(intgr(ielem) .eq. 2 .and. iiter .gt. 1 .and. ipred .eq. 1) cycle
         do ievab = 1, nevab
-            eload(ielem, ievab)=0.0
+            eload(ielem, ievab) = 0.0
         end do
     end do
 
@@ -46,20 +42,20 @@ subroutine resepl (coord , displ, effst, eload, epstn, iiter , intgr, leqns ,lno
         frict=props(lprop, 8)
         frict=frict*0.017453292
         if(ncrit .eq. 3) uniax = uniax*cos(frict)
-        if(ncrit .eq. 4) uniax = 6.0*uniax*cos(frict)/(1.73205080757*(3.0-sin(frict) ))
+        if(ncrit .eq. 4) uniax = 6.0 * uniax * cos(frict)/(1.73205080757*(3.0-sin(frict) ))
 
-        ! Compute coordinate and incremental displACEMENTS of the element nodal points
+        ! Compute coordinate and incremental displacements of the element nodal points
         iposn = 0
         do inode = 1, nnode
             lnode = lnods(ielem, inode)
             do idime = 1, ndime
                 iposn = iposn + 1
                 nposn = leqns(iposn, ielem)
-                if(nposn .eq. 0) dispt = 0.0
-                if(nposn .ne. 0) dispt = displ(nposn)
-                dlcod(idime, inode) = coord(lnode, idime)+dispt
+                if(nposn .eq. 0) dispv = 0.0
+                if(nposn .ne. 0) dispv = displ(nposn)
+                dlcod(idime, inode) = coord(lnode, idime) + dispv
                 elcod(idime, inode) = coord(lnode, idime)
-                eldis(idime, inode) = dispt
+                eldis(idime, inode) = dispv
             end do
         end do
 
@@ -90,7 +86,7 @@ subroutine resepl (coord , displ, effst, eload, epstn, iiter , intgr, leqns ,lno
                     stres(istr1) = stres(istr1) + strin(istr1, kgaus)
                 end do
 160             continue
-                preys = uniax+epstn(kgaus) * hards
+                preys = uniax + epstn(kgaus) * hards
                 do istr1=1, nstr1
                     desig(istr1) = stres(istr1)
                     sigma(istr1) = strsg(istr1,kgaus) + stres(istr1)
@@ -99,9 +95,9 @@ subroutine resepl (coord , displ, effst, eload, epstn, iiter , intgr, leqns ,lno
                 if(nlaps .eq. 2 .or. nlaps .eq. 0) goto 60
                 call invar(devia, lprop, ncrit, nmats, props, sint3, steff, sigma, theta, varj2, yield)
                 espre = effst(kgaus) - preys
-                if(espre.ge.0.0) goto 50
+                if(espre .ge. 0.0) goto 50
                 escur = yield-preys
-                IF(escur.le.0.0) goto 60
+                IF(escur .le. 0.0) goto 60
                 rfact=escur/(yield-effst(kgaus))
                 goto 70
 50              escur=yield-effst(kgaus)
@@ -130,12 +126,12 @@ subroutine resepl (coord , displ, effst, eload, epstn, iiter , intgr, leqns ,lno
                         bgash=bgash+avect(istr1) *sgtot( istr1)
                         sgtot(istr1)=sgtot ( istr1)+stres(istr1) -dlamd*dvect(istr1)
                     end do
-                    epstn(kgaus)=epstn(kgaus) + dlamd*bgash/ yield
+                    epstn(kgaus) = epstn(kgaus) + dlamd*bgash/ yield
                 end do
 
-                call INVAR (devia,lprop,ncrit,nmats, props, sint3,steff, sgtot , theta, varj2, yield)
+                call invar(devia,lprop,ncrit,nmats, props, sint3,steff, sgtot , theta, varj2, yield)
 
-                curys = uniax+epstn(kgaus)*hards
+                curys = uniax + epstn(kgaus)*hards
                 bring=1.0
                 if(yield .gt. curys) bring = curys/yield
                 DO istr1=1,nstr1
@@ -143,21 +139,21 @@ subroutine resepl (coord , displ, effst, eload, epstn, iiter , intgr, leqns ,lno
                 end do
                 effst(kgaus) =bring*yield
 
-                ! ALTERNATIVE LOCATION OF stresS reduction LOOP TERMINATION CARD
+                ! Alternative location of stress reduction loop termination card
                 ! 90 CONTINUE
                 goto 190
-60              DO istr1=1,nstr1
+60              DO istr1 = 1, nstr1
                     strsg(istr1,kgaus)=strsg(istr1,kgaus)+DESIG(istr1)
                 end do
                 effst(kgaus)= yield
 
-                ! CALCULATE THE EQUIVALENT NODAL FORCES AND ASSOCIATE WITH THE ELEMENT NODES
+                ! Calculate the equivalent nodal forces and associate with the element nodes
 190             mgash = 0
                 do inode=1,nnode
                     do idofn=1,ndofn
                         mgash=mgash+1
                         do istre =1, nstre
-                            eload(IELEM, mgash) = eload(IELEM, mgash) + bmatx(ISTRE, mgash)*strsg(istre , kgaus)*dvolu
+                            eload(ielem, mgash) = eload(ielem, mgash) + bmatx(ISTRE, mgash)*strsg(istre , kgaus)*dvolu
                         end do
                     end do
                 end do
@@ -166,8 +162,8 @@ subroutine resepl (coord , displ, effst, eload, epstn, iiter , intgr, leqns ,lno
     end do
 
     do ielem =1, nelem
-        do ievab =1, NEVAB
-            lmveb=leqns(IEVAB, IELEM)
+        do ievab =1, nevab
+            lmveb = leqns(ievab, ielem)
             if(lmveb .ne. 0) then
                 resid(lmveb) = resid(lmveb) + eload(ielem, ievab)
             endif

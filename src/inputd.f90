@@ -1,19 +1,16 @@
-subroutine inputd(coord, ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem, ngaum, ngaus, nlaps, nmats, nnode, npoin, nprev,  &
-    nstre, ntype, posgp, props, weigp)
+subroutine inputd()
 ! **********************************************************************
 !
 !  MIXDYN INPUT ROUTINE
 !
 ! **********************************************************************
+    use model
+
     implicit none
 
-    include 'param.inc'
+    ! include 'param.inc'
 
-    integer :: nconm, ncrit, ndime, ndofn, nelem, ngaum, ngaus, nlaps, nmats, nnode, npoin, nprev, nstre, ntype, nvfix, nprop,     &
-        nrads, ielem, numel, inode, ipoin, idime, idofn, ivfix, imats, imate, iprop
-    integer :: lnods(melem,mnode), ifpre(mdofn,mpoin), matno(melem)
-
-    real :: coord(mpoin,mdime), props(mmats, mprop), posgp(4), weigp(4)
+    integer :: ielem, inode, ipoin, idime, idofn, ivfix, imats, imate, iprop
 
     character*80 title
 
@@ -79,7 +76,7 @@ subroutine inputd(coord, ifpre, lnods, matno, nconm, ncrit, ndime, ndofn, nelem,
     end do
 
     ! Set up gaussian integration constants
-    call gaussq(ngaus, posgp, weigp)
+    call gaussq()
 
     return
 

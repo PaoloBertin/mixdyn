@@ -1,14 +1,15 @@
-subroutine contol(ndofn, nelem, nmats, npoin)
+subroutine contol()
 ! **********************************************************************
 !
 !     READ CONTROL DATA AND CHECK FOR DIMENSIONS
 !
 ! **********************************************************************
+    use model
+
     implicit none
 
-    include  'param.inc'
+    !include  'param.inc'
 
-    integer :: ndofn, nelem, nmats, npoin
 
     read(5, 110) npoin, nelem, ndofn, nmats
 

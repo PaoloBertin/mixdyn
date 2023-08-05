@@ -1,22 +1,19 @@
-subroutine lumass(coord, intgr, lnods, matno, nconm, ndime, ndofn, nelem, ngaum, nmats, nnode, npoin, ntype, props, ymass)
+subroutine lumass()
 ! **********************************************************************
 !
 ! CALCULATES LUMPED MASS FOR 4, 8 AND 9 NODED ELEMENT
 !
 ! **********************************************************************
+    use model
+
     implicit none
 
-    include 'param.inc'
-
-    integer :: nconm, ndime, ndofn, nelem, ngaum, nmats, nnode, npoin, ntype, nevab, ntotv, itotv, ielem, ievab, imass, kgasp,     &
-        lprop, inode, lnode, idime, igaus, jgaus, kount, jnode, jevab, iposn, iconm, ipoin, nposn, idofn
-
-    integer :: intgr(1), lnods(melem, mnode), matno(1)
+    integer :: nevab, ntotv, itotv, ielem, ievab, imass, kgasp, lprop, inode, lnode, idime, igaus, jgaus, kount, jnode,jevab, &
+        iposn, iconm, ipoin, nposn, idofn
 
     real :: twopi, tarea, thick, rhoel, exisp, etasp, djacb, dvolu, shapi, shapt, dmass, sumas, xcmas, ycmas
 
-    real :: coord(mpoin, mdime), props(mmats, mprop), elcod(2, 9), diagm(9), posgp(4), weigp(4), ymass(1), cartd(2, 9), shape(9),  &
-        gpcod(2,9), emass(171), deriv(2,9)
+    real :: elcod(2, 9), diagm(9), cartd(2, 9), shape(9), gpcod(2,9), emass(171), deriv(2,9)
 
     rewind 3
 
@@ -80,12 +77,12 @@ subroutine lumass(coord, intgr, lnods, matno, nconm, ndime, ndofn, nelem, ngaum,
             end do
         end do
 
-! WRITES CONSISTENT MASS MATRIX ON TAPE 3
+        ! Writes consistent mass matrix on tape 3
         if(imass .eq. 2) goto 200
         write(3) emass
-! WRITE(6,90) (EMASS(1I),I=1,171)
+        ! write(6, 90) (emass(i), i = 1, 171)
 200     if(imass .eq. 1) GO TO 100
-! GENERATES LUMPED MASS MATRIX PROPORTIONAL TO DIAGONAL
+        ! Generates lumped mass matrix proportional to diagonal
         sumas=0.0
         do inode=1, nnode
             sumas=sumas + diagm(inode)
@@ -100,23 +97,23 @@ subroutine lumass(coord, intgr, lnods, matno, nconm, ndime, ndofn, nelem, ngaum,
                 YMASS(IPOSN)=YMASS(IPOSN)+DIAGM(INODE)*SUMAS
             end do
         end do
-!90      FORMAT(2X, 9E12.3)
+!90      format(ex, 9e12.3)
     end do
 100 continue
 
-! CONCENTRATED MASSES
+    ! Cncentrated masses
     if(nconm .eq. 0) return
     write(6, 900)
     do iconm=1, nconm
         read(5,910) ipoin, xcmas, ycmas
-        write(6,910) IPOIN,XCMAS, YCMAS
+        write(6,910) ipoin, xcmas, ycmas
         nposn=(ipoin-1)*ndofn+1
         ymass(nposn)=ymass(nposn)+xcmas
         nposn = nposn+1
         ymass(nposn)=ymass(nposn)+ycmas
     end do
 
-!C     WRITE(6,90) (YMASS(I),I=1,NTOTV)
+!    write(6, 90) (ymass(i), i= 1, ntotv)
 
     return
 

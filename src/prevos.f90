@@ -1,23 +1,23 @@
-subroutine prevos(force, ndofn, nelem, ngaus, npoin, nprev, strin)
+subroutine prevos()
 ! **********************************************************************
 !
 ! GRAVITY LOADS AND STRESSES
 !
 ! **********************************************************************
+    use model
+
     implicit none
 
-    include 'param.inc'
+    integer :: nstr1, ngau2, ngash, nposn, ielem, igaus, kgaus, istri
 
-    integer :: ndofn, nelem, ngaus, npoin, nprev, nstr1, ngau2, ngash, nposn, ielem, igaus, kgaus, istri
-
-    real :: force(1), strin(4, 1), xgash, ygash
+    real :: xgash, ygash
 
     if(nprev .eq. 0) return
 
     nstr1 = 4
     ngau2 = ngaus*ngaus
 
-! READ GRAVITY LOADS
+    ! Read gravity loads
     write(6, 920)
     do while(ngash .ne. npoin)
         read(5, 930) ngash, xgash, ygash
@@ -28,12 +28,12 @@ subroutine prevos(force, ndofn, nelem, ngaus, npoin, nprev, strin)
         write(6, 940) ngash, xgash, ygash
     end do
 
-! READ GRAVITY STRESS
+    ! Read gravity stress
     write(6, 950)
-    do ielem =1, NELEM
+    do ielem =1, nelem
         do igaus =1, ngau2
             read(5,  930) kgaus, (strin(istri ,kgaus) , istri=1, nstr1)
-            write(6, 930) kgaus, (STRIN(ISTRI ,KGAUS) , istri=1, nstr1)
+            write(6, 930) kgaus, (strin(istri ,kgaus) , istri=1, nstr1)
         end do
     end do
 
