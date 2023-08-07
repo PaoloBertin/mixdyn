@@ -1,4 +1,4 @@
-add_executable(MIXDYN
+add_executable(Mixdyn
                mixdyn.f90
                contol.f90
                inputd.f90

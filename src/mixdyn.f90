@@ -14,6 +14,7 @@ program mixdyn
 !
 !   COORD   Nodal coordinates
 !   PROPS
+!   NPOIN
 ! **********************************************************************
     use model
 
@@ -22,6 +23,8 @@ program mixdyn
     integer :: istep, iiter, nchek
 
     real :: consd, consf
+
+    integer :: dt(8)
 
     ! real :: dispi(mpoin*mdime), veloi(mpoin*mdime), accei(mpoin*mdime),                  &
     !     displ(mpoin*mdime), ymass(mpoin*mdime), accek(mpoin*mdime), accej(mpoin*mdime), resid(mpoin*mdime), dispt(mpoin*mdime),    &
@@ -32,13 +35,21 @@ program mixdyn
 
     ! common stiff, xmass, dampg, stifi, stifs, dampi
 
+    ! Start
+    call date_and_time(values=dt)
+    write(*, '(a7, i4, 5(a, i2.2), a, i3/)') 'Start ', dt(1), '-', dt(2), '-', dt(3), ' ', dt(5), ':', dt(6), ':', dt(7), '.', dt(8)
+
     ! Open the file I/O
     open(5, file='/home/paolo-bertin/Documenti/FortranProjets/mixdyn/data/input.dat',  status='OLD')
     open(6, file='/home/paolo-bertin/Documenti/FortranProjets/mixdyn/data/result.dat', status='OLD')
 
+    call date_and_time(values=dt)
+    write(*, '(a7, i4, 5(a, i2.2), a, i3/)') 'Start ', dt(1), '-', dt(2), '-', dt(3), ' ', dt(5), ':', dt(6), ':', dt(7), '.', dt(8)
+
     call contol()
     call inputd()
     call intime()
+    goto 100
     call prevos()
     call loadpl()
     call lumass()
@@ -58,6 +69,7 @@ program mixdyn
     close(5)
     close(6)
 
+100 continue
     stop
 
 end program mixdyn
