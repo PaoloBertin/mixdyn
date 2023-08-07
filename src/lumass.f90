@@ -107,10 +107,10 @@ subroutine lumass()
     do iconm=1, nconm
         read(5,910) ipoin, xcmas, ycmas
         write(6,910) ipoin, xcmas, ycmas
-        nposn=(ipoin-1)*ndofn+1
-        ymass(nposn)=ymass(nposn)+xcmas
-        nposn = nposn+1
-        ymass(nposn)=ymass(nposn)+ycmas
+        nposn = (ipoin-1) * ndofn + 1
+        ymass(nposn) = ymass(nposn) + xcmas
+        nposn = nposn + 1
+        ymass(nposn) = ymass(nposn) + ycmas
     end do
 
 !    write(6, 90) (ymass(i), i= 1, ntotv)

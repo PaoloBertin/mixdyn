@@ -85,15 +85,14 @@ subroutine intime()
     endif
 
     if(ifixd .eq. 1) then
-        open(12, FILE='accex.dat', STATUS='OLD')
-        read(12 , 907) (ACCEV(IACCE), IACCE=1, nacce)
+        open(12, FILE='accex.dat', status='OLD')
         write(6 ,913) dtrec
-        write(6, 907) (ACCEV(IACCE), IACCE=1 , nacce)
+        write(6, 907) (accev(iacce), iacce=1 , nacce)
         close(12)
     endif
 
     if(ifixd .eq. 2) then
-        open(12, FILE='accey.dat', STATUS='OLD')
+        open(12, FILE='accey.dat', status='OLD')
         read(7, 907) (acceh(iacce), iacce=1, nacce)
         write(6 ,912)
         write(6, 907) (acceh(iacce), iacce=1, nacce)

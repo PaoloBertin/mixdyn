@@ -34,7 +34,7 @@ subroutine loadpl()
     write(6, 903) title
 
     ! Read data controlling loading types to be inputed
-    read(5, 919) iplod, igrav, iedge, itemp
+    read(5, 919) 
     write(6, 990)
     write(6, 991) iplod, igrav, iedge, itemp
 
@@ -42,11 +42,11 @@ subroutine loadpl()
     if(iplod .ne. 0) then
         write(6, 998)
         do while(lodpt .lt. npoin)
-            read (5, 931) lodpt, (point(idofn), idofn=1,ndofn)
-            write(6, 933) lodpt, (point(idofn), idofn=1, ndofn)
+            read (5, 931) lodpt, (point(idofn), idofn = 1, ndofn)
+            write(6, 933) lodpt, (point(idofn), idofn = 1, ndofn)
 
             ! Associate the nodal point loads with an element
-            do ielem=1, nelem
+            do ielem = 1, nelem
                 do inode=1,nnode
                     nloca= iabs(lnods(ielem, inode) )
                     if(lodpt .eq. nloca) goto 40
@@ -54,8 +54,8 @@ subroutine loadpl()
             end do
 
 40          do idofn=1, ndofn
-                ngash=(inode-1)*ndofn+idofn
-                rload(ielem, ngash)=point(idofn)
+                ngash = (inode-1) * ndofn + idofn
+                rload(ielem, ngash) = point(idofn)
             end do
         end do
     endif
@@ -188,7 +188,6 @@ subroutine loadpl()
     endif
 
     if(itemp .ne. 0) then
-
         ! Initialize and input the nodal temperatures temperatures
         do ipoin=1, npoin
             tempe(ipoin)=0.0
@@ -294,12 +293,12 @@ subroutine loadpl()
     do ielem=1,nelem
         kevab=0
         do inode = 1,nnode
-            lnode=lnods( ielem , inode)
-            nposn=(lnode-1)*NDOFN
+            lnode = lnods(ielem , inode)
+            nposn = (lnode-1) * ndofn
             do idofn = 1, ndofn
-                kevab=kevab+1
-                nposn=nposn+1
-                force(nposn)=force(nposn)+rload( ielem, kevab)
+                kevab=kevab + 1
+                nposn=nposn + 1
+                force(nposn) = force(nposn) + rload(ielem, kevab)
             end do
         end do
     end do
